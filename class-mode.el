@@ -1,11 +1,9 @@
-;;; -*-Emacs-Lisp-*-
+;;; class-mode.el --- View Java class files from within emacs
 ;;;
 ;;; Author: Bryan Kyle <bryan.kyle@gmail.com>
 ;;; Date: 2009-10-29
 ;;;
-;;; Class Mode - View Java class files from within emacs
-;;;
-;;; Overview:
+;;; Commentary:
 ;;;
 ;;; class-mode is a major mode that allows you to view java class files in
 ;;; decompiled form.  class-mode provides the following features:
@@ -23,6 +21,8 @@
 ;;;     (add-to-list 'auto-mode-alist '("\\.class$" . class-mode))
 ;;;
 ;;;
+
+;;; Code:
 
 (defun class-decompile-javap (filename buffer)
   "Decompiles the given class file using javap and places the result in the
