@@ -95,3 +95,5 @@ the decompiled code."
 
 (setq class-mode-decompile-command "jad -b -lnc -&")
 (setq class-mode-major-mode-post-decompile 'java-mode)
+
+(provide 'class-mode)
