@@ -1,9 +1,11 @@
-;;; class-mode.el --- View Java class files from within emacs
+;;; -*-Emacs-Lisp-*-
 ;;;
 ;;; Author: Bryan Kyle <bryan.kyle@gmail.com>
 ;;; Date: 2009-10-29
 ;;;
-;;; Commentary:
+;;; Class Mode - View Java class files from within emacs
+;;;
+;;; Overview:
 ;;;
 ;;; class-mode is a major mode that allows you to view java class files in
 ;;; decompiled form.  class-mode provides the following features:
@@ -22,8 +24,6 @@
 ;;;
 ;;;
 
-;;; Code:
-
 (defun class-decompile-javap (filename buffer)
   "Decompiles the given class file using javap and places the result in the
 passed buffer."
@@ -32,7 +32,7 @@ passed buffer."
   ; does isn't retained.
   (save-selected-window
 	(save-window-excursion
-	  (shell-command (concat "javap -c -l -s -private" " " (file-name-sans-extension filename)) buffer))))
+	  (shell-command (concat "javap -c -l -s -private" " " filename) buffer))))
 
 (defun class-decompile-jad (filename buffer)
   "Decompiles the given class file using jad and places the result in the
@@ -84,16 +84,15 @@ the decompiled code."
   (let (data filename)
 	(setq data (buffer-substring (point-min) (point-max)))
 	(delete-region (point-min) (point-max))
-	(setq filename (file-name-nondirectory buffer-file-name))
+	(setq filename (concat temporary-file-directory (file-name-nondirectory buffer-file-name)))
 	(with-temp-file filename
 	  (set-buffer-file-coding-system 'binary)
 	  (insert data))
 	(class-decompile-file filename (current-buffer))
 	(delete-file filename)
 	(goto-char (point-min))
-	(set-buffer-modified-p nil)))
+	(set-buffer-modified-p nil)
+	(setq buffer-read-only t)))
 
 (setq class-mode-decompile-command "jad -b -lnc -&")
 (setq class-mode-major-mode-post-decompile 'java-mode)
-
-(provide 'class-mode)
