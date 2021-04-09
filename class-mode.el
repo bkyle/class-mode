@@ -32,7 +32,7 @@ passed buffer."
   ; does isn't retained.
   (save-selected-window
 	(save-window-excursion
-	  (shell-command (concat "javap -c -l -s -private" " " filename) buffer))))
+	  (shell-command (concat "javap -c -l -s -private '" filename "'") buffer))))
 
 (defun class-decompile-jad (filename buffer)
   "Decompiles the given class file using jad and places the result in the
