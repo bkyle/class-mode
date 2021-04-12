@@ -24,6 +24,8 @@
 ;;;
 ;;;
 
+(require 'javap-mode)
+
 (defun class-decompile-javap (filename buffer)
   "Decompiles the given class file using javap and places the result in the
 passed buffer."
@@ -95,7 +97,7 @@ the decompiled code."
     (set-buffer-modified-p nil)
     (setq buffer-read-only t)))
 
-(defvar class-mode-major-mode-post-decompile 'java-mode
+(defvar class-mode-major-mode-post-decompile 'javap-mode
   "Mode to switch into after decompiling a .class file. Set to
   nil to stay in class-mode")
 
