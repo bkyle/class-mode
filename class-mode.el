@@ -1,4 +1,4 @@
-;;; -*-Emacs-Lisp-*-
+;;; -*-mode: emacs-lisp; indent-with-tabs: nil-*-
 ;;;
 ;;; Author: Bryan Kyle <bryan.kyle@gmail.com>
 ;;; Date: 2009-10-29
@@ -28,36 +28,36 @@
   "Decompiles the given class file using javap and places the result in the
 passed buffer."
 
-  ; Need save-selected-window and save-window-excursion so that the split that shell-command
-  ; does isn't retained.
+  ;; Need save-selected-window and save-window-excursion so that the split that shell-command
+  ;; does isn't retained.
   (save-selected-window
-	(save-window-excursion
-	  (shell-command (concat "javap -c -l -s -private '" filename "'") buffer))))
+    (save-window-excursion
+      (shell-command (concat "javap -c -l -s -private '" filename "'") buffer))))
 
 (defun class-decompile-jad (filename buffer)
   "Decompiles the given class file using jad and places the result in the
 passed buffer."
 
-  ; Need save-selected-window and save-window-excursion so that the split that shell-command
-  ; does isn't retained.
+  ;; Need save-selected-window and save-window-excursion so that the split that shell-command
+  ;; does isn't retained.
   (save-selected-window
-	(save-window-excursion
-	  (shell-command (concat "jad -b -lnc -s java" " " filename) (current-buffer))
-	  (let (buffer source-file data)
-		(setq source-file (concat (file-name-sans-extension filename) ".java"))
-		(setq buffer (current-buffer))
+    (save-window-excursion
+      (shell-command (concat "jad -b -lnc -s java" " " filename) (current-buffer))
+      (let (buffer source-file data)
+        (setq source-file (concat (file-name-sans-extension filename) ".java"))
+        (setq buffer (current-buffer))
 
-		; load the file
-		(find-file source-file)
-		(setq data (buffer-substring (point-min) (point-max)))
-		(kill-buffer)
+                                        ; load the file
+        (find-file source-file)
+        (setq data (buffer-substring (point-min) (point-max)))
+        (kill-buffer)
 
-		(pop-to-buffer buffer)
-		(delete-region (point-min) (point-max))
-		(insert data)
-		(java-mode)
+        (pop-to-buffer buffer)
+        (delete-region (point-min) (point-max))
+        (insert data)
+        (java-mode)
 
-		(delete-file source-file)))))
+        (delete-file source-file)))))
 
 (defvar class-mode-decompile-function 'class-decompile-javap
   "Decompiler function to use to decompile a class.  Possible values are
@@ -80,21 +80,25 @@ the decompiled code."
 
 (defun class-decompile ()
   "Decompiles a java class file in the current buffer."
-
   (let (data filename)
-	(setq data (buffer-substring (point-min) (point-max)))
-	(delete-region (point-min) (point-max))
-	(setq filename (concat temporary-file-directory (file-name-nondirectory buffer-file-name)))
-	(with-temp-file filename
-	  (set-buffer-file-coding-system 'binary)
-	  (insert data))
-	(class-decompile-file filename (current-buffer))
-	(delete-file filename)
-	(goto-char (point-min))
-	(set-buffer-modified-p nil)
-	(setq buffer-read-only t)))
+    (setq data (buffer-substring (point-min) (point-max)))
+    (delete-region (point-min) (point-max))
+    (setq filename (concat temporary-file-directory (file-name-nondirectory buffer-file-name)))
+    (with-temp-file filename
+      (set-buffer-file-coding-system 'binary)
+      (insert data))
+    (class-decompile-file filename (current-buffer))
+    (when class-mode-major-mode-post-decompile
+      (apply class-mode-major-mode-post-decompile '()))
+    (delete-file filename)
+    (goto-char (point-min))
+    (set-buffer-modified-p nil)
+    (setq buffer-read-only t)))
 
-(setq class-mode-decompile-command "jad -b -lnc -&")
-(setq class-mode-major-mode-post-decompile 'java-mode)
+(defvar class-mode-major-mode-post-decompile 'java-mode
+  "Mode to switch into after decompiling a .class file. Set to
+  nil to stay in class-mode")
+
+(setq class-mode-major-mode-post-decompile nil)
 
 (provide 'class-mode)
