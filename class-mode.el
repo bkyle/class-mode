@@ -101,6 +101,4 @@ the decompiled code."
   "Mode to switch into after decompiling a .class file. Set to
   nil to stay in class-mode")
 
-(setq class-mode-major-mode-post-decompile nil)
-
 (provide 'class-mode)
