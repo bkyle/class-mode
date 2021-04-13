@@ -43,7 +43,8 @@
          word-end) . font-lock-constant-face)
    `(,(rx word-start
           (group
-           (or "private" "public" "protected" "class" "interface" "static" "final"))
+           (or "private" "public" "protected" "class" "interface" "static" "final"
+               "volatile" "extends" "implements" "synchronized" "package" "import" ))
           word-end) . font-lock-keyword-face)
    ;; `(,(rx word-start (group alpha (* (any alphanumeric "."))) word-end) . font-lock-variable-name-face)
    `(,(rx (group (? "[") "L" alpha (* (any alphanumeric "/" "$"))) ";") . font-lock-type-face)
