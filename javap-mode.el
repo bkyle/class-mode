@@ -40,14 +40,17 @@
               "multianewarray" "new" "newarray" "nop" "pop" "pop2" "putfield"
               "putstatic" "ret" "return" "saload" "sastore" "sipush" "swap"
               "tableswitch" "wide"))
-         word-end) . font-lock-constant-face)
+         word-end) . font-lock-builtin-face)
+   ;; `(,(rx (+ (or "public" "private" "protected" "package" "class" "interface" "static" "final") (+ space))
+   ;;        (? space) (group (+ (seq alpha (* (any alphanumeric "<" ">" "[" "]")) (? "."))))
+   ;;        (+ space) (group (+ (seq alpha (* (any alphanumeric "_")))))) (1 font-lock-type-face) (2 font-lock-variable-name-face))
    `(,(rx word-start
           (group
            (or "private" "public" "protected" "class" "interface" "static" "final"
                "volatile" "extends" "implements" "synchronized" "package" "import" ))
           word-end) . font-lock-keyword-face)
    ;; `(,(rx word-start (group alpha (* (any alphanumeric "."))) word-end) . font-lock-variable-name-face)
-   `(,(rx (group (? "[") "L" alpha (* (any alphanumeric "/" "$"))) ";") . font-lock-type-face)
+   `(,(rx word-start (group (? "[") "L" alpha (* (any alphanumeric "/" "$"))) ";") . font-lock-type-face)
    `(,(rx "#" (+ digit)) . font-lock-variable-name-face)))
 
    ;; '("\\<\\(include\\|struct\\|exception\\|typedef\\|const\\|enum\\|service\\|extends\\|void\\|oneway\\|throws\\|optional\\|required\\)\\>" . font-lock-keyword-face)  ;; keywords
