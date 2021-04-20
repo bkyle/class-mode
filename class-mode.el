@@ -82,20 +82,23 @@ the decompiled code."
 
 (defun class-decompile ()
   "Decompiles a java class file in the current buffer."
-  (let (data filename)
-    (setq data (buffer-substring (point-min) (point-max)))
-    (delete-region (point-min) (point-max))
-    (setq filename (concat temporary-file-directory (file-name-nondirectory buffer-file-name)))
-    (with-temp-file filename
-      (set-buffer-file-coding-system 'binary)
-      (insert data))
-    (class-decompile-file filename (current-buffer))
-    (when class-mode-major-mode-post-decompile
-      (apply class-mode-major-mode-post-decompile '()))
-    (delete-file filename)
-    (goto-char (point-min))
-    (set-buffer-modified-p nil)
-    (setq buffer-read-only t)))
+  (if buffer-file-name
+      (progn
+        (let (data filename)
+          (setq data (buffer-substring (point-min) (point-max)))
+          (delete-region (point-min) (point-max))
+          (setq filename (concat temporary-file-directory (file-name-nondirectory buffer-file-name)))
+          (with-temp-file filename
+            (set-buffer-file-coding-system 'binary)
+            (insert data))
+          (class-decompile-file filename (current-buffer))
+          (when class-mode-major-mode-post-decompile
+            (apply class-mode-major-mode-post-decompile '()))
+          (delete-file filename)
+          (goto-char (point-min))
+          (set-buffer-modified-p nil)
+          (setq buffer-read-only t)))
+    (message "Unable to decompile class, no buffer file.")))
 
 (defvar class-mode-major-mode-post-decompile 'javap-mode
   "Mode to switch into after decompiling a .class file. Set to
